@@ -10,5 +10,5 @@ func Sample(left int16, right int16) {
 // SampleBatch renders multiple audio frames in one go
 // It is passed as a callback to the libretro implementation.
 func SampleBatch(buf []byte, size int32) int32 {
-	return size
+	return size * 4
 }
