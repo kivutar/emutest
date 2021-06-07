@@ -84,7 +84,7 @@ func (o *Options) Save() error {
 	}
 
 	name := utils.FileName(state.CorePath)
-	fd, err := os.Create(filepath.Join(home, ".ludo", name+".toml"))
+	fd, err := os.Create(filepath.Join(home, "emutest", name+".toml"))
 	if err != nil {
 		return err
 	}
