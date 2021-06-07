@@ -113,12 +113,6 @@ func LoadGame(gamePath string) error {
 		return err
 	}
 
-	// If we're loading a new game on the same core, save the RAM of the previous
-	// game before closing it.
-	if state.GamePath != gamePath {
-		UnloadGame()
-	}
-
 	si := state.Core.GetSystemInfo()
 
 	gi, err := getGameInfo(gamePath, si.BlockExtract)
