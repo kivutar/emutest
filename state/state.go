@@ -13,6 +13,9 @@ import (
 // Core is the current libretro core, if any is loaded
 var Core *libretro.Core
 
+// Frame is the frame counter
+var Frame int
+
 // NFrames is the number of frames to execute
 var NFrames int
 

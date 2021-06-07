@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"unsafe"
 
+	"github.com/kivutar/emutest/state"
 	"github.com/libretro/ludo/libretro"
 
 	"crypto/sha1"
@@ -26,7 +27,7 @@ func Refresh(data unsafe.Pointer, width int32, height int32, pitch int32) {
 	n := height * pitch
 	bytes := (*[1 << 30]byte)(data)[:n:n]
 
-	fmt.Printf("[Video]: Refresh: %d %d %d %x\n", width, height, pitch, sha1.Sum(bytes))
+	fmt.Printf("[Video]: Refresh: %d %d %d %d %x\n", state.Frame, width, height, pitch, sha1.Sum(bytes))
 }
 
 // SetRotation rotates the game image as requested by the core

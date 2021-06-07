@@ -9,10 +9,8 @@ import (
 	"github.com/kivutar/emutest/state"
 )
 
-var frames = 0
-
 func runLoop() {
-	for frames < state.NFrames {
+	for state.Frame < state.NFrames {
 		// poll inputs here
 
 		state.Core.Run()
@@ -23,7 +21,7 @@ func runLoop() {
 			state.Core.AudioCallback.Callback()
 		}
 
-		frames++
+		state.Frame++
 	}
 }
 
