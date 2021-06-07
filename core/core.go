@@ -25,10 +25,6 @@ var Options *options.Options
 
 // Load loads a libretro core
 func Load(sofile string) error {
-	// In case the a core is already loaded, we need to close it properly
-	// before loading the new core
-	Unload()
-
 	// This must be set before the environment callback is called
 	state.CorePath = sofile
 
