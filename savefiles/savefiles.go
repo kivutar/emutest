@@ -10,10 +10,9 @@ import (
 	"sync"
 	"unsafe"
 
+	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/utils"
 	"github.com/libretro/ludo/libretro"
-	"github.com/libretro/ludo/settings"
-	"github.com/libretro/ludo/state"
-	"github.com/libretro/ludo/utils"
 )
 
 var mutex sync.Mutex
@@ -21,7 +20,7 @@ var mutex sync.Mutex
 // path returns the path of the SRAM file for the current core
 func path() string {
 	return filepath.Join(
-		settings.Current.SavefilesDirectory,
+		state.SavefilesDirectory,
 		utils.FileName(state.GamePath)+".srm")
 }
 
@@ -29,10 +28,6 @@ func path() string {
 func SaveSRAM() error {
 	mutex.Lock()
 	defer mutex.Unlock()
-
-	if !state.CoreRunning {
-		return errors.New("core not running")
-	}
 
 	len := state.Core.GetMemorySize(libretro.MemorySaveRAM)
 	ptr := state.Core.GetMemoryData(libretro.MemorySaveRAM)
@@ -42,7 +37,7 @@ func SaveSRAM() error {
 
 	// convert the C array to a go slice
 	bytes := C.GoBytes(ptr, C.int(len))
-	err := os.MkdirAll(settings.Current.SavefilesDirectory, os.ModePerm)
+	err := os.MkdirAll(state.SavefilesDirectory, os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -70,10 +65,6 @@ func SaveSRAM() error {
 func LoadSRAM() error {
 	mutex.Lock()
 	defer mutex.Unlock()
-
-	if !state.CoreRunning {
-		return errors.New("core not running")
-	}
 
 	len := state.Core.GetMemorySize(libretro.MemorySaveRAM)
 	ptr := state.Core.GetMemoryData(libretro.MemorySaveRAM)

@@ -2,87 +2,36 @@ package main
 
 import (
 	"flag"
-	"log"
+	"fmt"
 	"os"
-	"runtime"
-	"time"
 
-	"github.com/go-gl/glfw/v3.3/glfw"
-	"github.com/libretro/ludo/audio"
-	"github.com/libretro/ludo/core"
-	"github.com/libretro/ludo/history"
-	"github.com/libretro/ludo/input"
-	"github.com/libretro/ludo/menu"
-	ntf "github.com/libretro/ludo/notifications"
-	"github.com/libretro/ludo/playlists"
-	"github.com/libretro/ludo/savefiles"
-	"github.com/libretro/ludo/scanner"
-	"github.com/libretro/ludo/settings"
-	"github.com/libretro/ludo/state"
-	"github.com/libretro/ludo/video"
+	"github.com/kivutar/emutest/core"
+	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/video"
 )
 
-func init() {
-	// GLFW event handling must run on the main OS thread
-	runtime.LockOSThread()
-}
+var frames = 0
 
-var frame = 0
+func runLoop() {
+	for frames < state.NFrames {
+		// poll inputs here
 
-func runLoop(vid *video.Video, m *menu.Menu) {
-	currTime := time.Now()
-	prevTime := time.Now()
-	for !vid.Window.ShouldClose() {
-		currTime = time.Now()
-		dt := float32(currTime.Sub(prevTime)) / 1000000000
-		glfw.PollEvents()
-		m.ProcessHotkeys()
-		ntf.Process(dt)
-		vid.ResizeViewport()
-		m.UpdatePalette()
-		if !state.MenuActive {
-			if state.CoreRunning {
-				state.Core.Run()
-				if state.Core.FrameTimeCallback != nil {
-					state.Core.FrameTimeCallback.Callback(state.Core.FrameTimeCallback.Reference)
-				}
-				if state.Core.AudioCallback != nil {
-					state.Core.AudioCallback.Callback()
-				}
-			}
-			vid.Render()
-			frame++
-			if frame%600 == 0 { // save sram about every 10 sec
-				savefiles.SaveSRAM()
-			}
-		} else {
-			input.Poll()
-			m.Update(dt)
-			vid.Render()
-			m.Render(dt)
+		state.Core.Run()
+		if state.Core.FrameTimeCallback != nil {
+			state.Core.FrameTimeCallback.Callback(state.Core.FrameTimeCallback.Reference)
 		}
-		m.RenderNotifications()
-		if state.FastForward {
-			glfw.SwapInterval(0)
-		} else {
-			glfw.SwapInterval(1)
+		if state.Core.AudioCallback != nil {
+			state.Core.AudioCallback.Callback()
 		}
-		vid.Window.SwapBuffers()
-		prevTime = currTime
+
+		frames++
 	}
 }
 
 func main() {
-	err := settings.Load()
-	if err != nil {
-		log.Println("[Settings]: Loading failed:", err)
-		log.Println("[Settings]: Using default settings")
-	}
-
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
 	flag.StringVar(&state.CorePath, "L", "", "Path to the libretro core")
-	flag.BoolVar(&state.Verbose, "v", false, "Verbose logs")
-	flag.BoolVar(&state.LudOS, "ludos", false, "Expose the features related to LudOS")
+	flag.IntVar(&state.NFrames, "nframes", 1, "Number of frames to execute")
 	flag.Parse()
 	args := flag.Args()
 
@@ -91,50 +40,20 @@ func main() {
 		gamePath = args[0]
 	}
 
-	if err := glfw.Init(); err != nil {
-		log.Fatalln("Failed to initialize glfw", err)
-	}
-	defer glfw.Terminate()
-
-	state.DB, err = scanner.LoadDB(settings.Current.DatabaseDirectory)
-	if err != nil {
-		log.Println("Can't load game database:", err)
-	}
-
-	playlists.Load()
-
-	history.Load()
-
-	vid := video.Init(settings.Current.VideoFullscreen)
-
-	audio.Init()
-
-	m := menu.Init(vid)
-
+	vid := video.Init()
 	core.Init(vid)
 
-	input.Init(vid)
-
-	if len(state.CorePath) > 0 {
-		err := core.Load(state.CorePath)
-		if err == nil {
-			if len(gamePath) > 0 {
-				err := core.LoadGame(gamePath)
-				if err != nil {
-					ntf.DisplayAndLog(ntf.Error, "Menu", err.Error())
-				} else {
-					m.WarpToQuickMenu()
-				}
-			}
-		} else {
-			ntf.DisplayAndLog(ntf.Error, "Menu", err.Error())
+	err := core.Load(state.CorePath)
+	if err == nil {
+		err := core.LoadGame(gamePath)
+		if err != nil {
+			fmt.Println(err)
 		}
+	} else {
+		fmt.Println(err)
 	}
 
-	// No game running? display the menu
-	state.MenuActive = !state.CoreRunning
-
-	runLoop(vid, m)
+	runLoop()
 
 	// Unload and deinit in the core.
 	core.Unload()

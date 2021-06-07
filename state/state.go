@@ -3,21 +3,18 @@
 package state
 
 import (
-	"github.com/libretro/ludo/dat"
+	"os"
+
 	"github.com/libretro/ludo/libretro"
+
+	"path/filepath"
 )
 
 // Core is the current libretro core, if any is loaded
 var Core *libretro.Core
 
-// CoreRunning is true if a game or a gameless core is loaded
-var CoreRunning bool
-
-// MenuActive is whether to display the menu layer
-var MenuActive bool
-
-// Verbose will output more logs
-var Verbose bool
+// NFrames is the number of frames to execute
+var NFrames int
 
 // CorePath is the path of the current libretro core
 var CorePath string
@@ -25,11 +22,9 @@ var CorePath string
 // GamePath is the path of the current game
 var GamePath string
 
-// DB is the game database loaded on startup
-var DB dat.DB
+var HomeDirectory, _ = os.UserHomeDir()
 
-// LudOS is whether run Ludo as a unix desktop environment
-var LudOS bool
-
-// FastForward will run the core as fast as possible
-var FastForward bool
+var SavestatesDirectory = filepath.Join(HomeDirectory, "emutest", "savestates")
+var SavefilesDirectory = filepath.Join(HomeDirectory, "emutest", "savefiles")
+var ScreenshotsDirectory = filepath.Join(HomeDirectory, "emutest", "screenshots")
+var SystemDirectory = filepath.Join(HomeDirectory, "emutest", "system")

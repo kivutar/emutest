@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/libretro/ludo/state"
-	"github.com/libretro/ludo/utils"
+	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/utils"
 	"github.com/pelletier/go-toml"
 )
 

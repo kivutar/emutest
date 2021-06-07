@@ -7,8 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/libretro/ludo/settings"
-	"github.com/libretro/ludo/state"
+	"github.com/kivutar/emutest/state"
 )
 
 // Save the current state to the filesystem. name is the name of the
@@ -19,8 +18,8 @@ func Save(name string) error {
 	if err != nil {
 		return err
 	}
-	path := filepath.Join(settings.Current.SavestatesDirectory, name+".state")
-	err = os.MkdirAll(settings.Current.SavestatesDirectory, os.ModePerm)
+	path := filepath.Join(state.SavestatesDirectory, name+".state")
+	err = os.MkdirAll(state.SavestatesDirectory, os.ModePerm)
 	if err != nil {
 		return err
 	}

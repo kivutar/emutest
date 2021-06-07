@@ -1,16 +1,15 @@
 package core
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"os/user"
 	"time"
 	"unsafe"
 
+	"github.com/kivutar/emutest/options"
+	"github.com/kivutar/emutest/state"
 	"github.com/libretro/ludo/libretro"
-	"github.com/libretro/ludo/options"
-	"github.com/libretro/ludo/settings"
-	"github.com/libretro/ludo/state"
 )
 
 var logLevels = map[uint32]string{
@@ -22,7 +21,7 @@ var logLevels = map[uint32]string{
 }
 
 func logCallback(level uint32, str string) {
-	log.Printf("[%s]: %s", logLevels[level], str)
+	fmt.Printf("[%s]: %s", logLevels[level], str)
 }
 
 func getTimeUsec() int64 {
@@ -56,22 +55,22 @@ func environmentGetUsername(data unsafe.Pointer) bool {
 }
 
 func environmentGetSystemDirectory(data unsafe.Pointer) bool {
-	err := os.MkdirAll(settings.Current.SystemDirectory, os.ModePerm)
+	err := os.MkdirAll(state.SystemDirectory, os.ModePerm)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return false
 	}
-	libretro.SetString(data, settings.Current.SystemDirectory)
+	libretro.SetString(data, state.SystemDirectory)
 	return true
 }
 
 func environmentGetSaveDirectory(data unsafe.Pointer) bool {
-	err := os.MkdirAll(settings.Current.SavefilesDirectory, os.ModePerm)
+	err := os.MkdirAll(state.SavefilesDirectory, os.ModePerm)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return false
 	}
-	libretro.SetString(data, settings.Current.SavefilesDirectory)
+	libretro.SetString(data, state.SavefilesDirectory)
 	return true
 }
 
@@ -87,7 +86,7 @@ func environmentSetVariables(data unsafe.Pointer) bool {
 	var err error
 	Options, err = options.New(pass)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return false
 	}
 	return true
@@ -105,7 +104,7 @@ func environmentSetCoreOptions(data unsafe.Pointer) bool {
 	var err error
 	Options, err = options.New(pass)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return false
 	}
 	return true
@@ -123,7 +122,7 @@ func environmentSetCoreOptionsIntl(data unsafe.Pointer) bool {
 	var err error
 	Options, err = options.New(pass)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return false
 	}
 	return true
@@ -152,7 +151,7 @@ func environment(cmd uint32, data unsafe.Pointer) bool {
 	case libretro.EnvironmentGetSaveDirectory:
 		return environmentGetSaveDirectory(data)
 	case libretro.EnvironmentShutdown:
-		vid.SetShouldClose(true)
+		return true
 	case libretro.EnvironmentGetCoreOptionsVersion:
 		libretro.SetUint(data, 1)
 	case libretro.EnvironmentSetCoreOptions:
@@ -172,7 +171,7 @@ func environment(cmd uint32, data unsafe.Pointer) bool {
 		avi := libretro.GetSystemAVInfo(data)
 		vid.Geom = avi.Geometry
 	case libretro.EnvironmentGetFastforwarding:
-		libretro.SetBool(data, state.FastForward)
+		libretro.SetBool(data, false)
 	case libretro.EnvironmentGetLanguage:
 		libretro.SetUint(data, 0)
 	case libretro.EnvironmentGetDiskControlInterfaceVersion:
@@ -180,7 +179,7 @@ func environment(cmd uint32, data unsafe.Pointer) bool {
 	case libretro.EnvironmentSetDiskControlInterface:
 		state.Core.SetDiskControlCallback(data)
 	default:
-		//log.Println("[Env]: Not implemented:", cmd)
+		//fmt.Println("[Env]: Not implemented:", cmd)
 		return false
 	}
 	return true

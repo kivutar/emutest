@@ -6,20 +6,18 @@ package core
 import (
 	"archive/zip"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/libretro/ludo/audio"
-	"github.com/libretro/ludo/input"
+	"github.com/kivutar/emutest/audio"
+	"github.com/kivutar/emutest/input"
+	"github.com/kivutar/emutest/options"
+	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/video"
 	"github.com/libretro/ludo/libretro"
-	"github.com/libretro/ludo/options"
-	"github.com/libretro/ludo/patch"
-	"github.com/libretro/ludo/savefiles"
-	"github.com/libretro/ludo/state"
-	"github.com/libretro/ludo/video"
 )
 
 var vid *video.Video
@@ -55,17 +53,13 @@ func Load(sofile string) error {
 	state.Core.SetAudioSample(audio.Sample)
 	state.Core.SetAudioSampleBatch(audio.SampleBatch)
 
-	// Append the library name to the window title.
 	si := state.Core.GetSystemInfo()
 	if len(si.LibraryName) > 0 {
-		vid.SetTitle("Ludo - " + si.LibraryName)
-		if state.Verbose {
-			log.Println("[Core]: Name:", si.LibraryName)
-			log.Println("[Core]: Version:", si.LibraryVersion)
-			log.Println("[Core]: Valid extensions:", si.ValidExtensions)
-			log.Println("[Core]: Need fullpath:", si.NeedFullpath)
-			log.Println("[Core]: Block extract:", si.BlockExtract)
-		}
+		fmt.Println("[Core]: Name:", si.LibraryName)
+		fmt.Println("[Core]: Version:", si.LibraryVersion)
+		fmt.Println("[Core]: Valid extensions:", si.ValidExtensions)
+		fmt.Println("[Core]: Need fullpath:", si.NeedFullpath)
+		fmt.Println("[Core]: Block extract:", si.BlockExtract)
 	}
 
 	return nil
@@ -146,17 +140,11 @@ func LoadGame(gamePath string) error {
 			return err
 		}
 
-		if patched, _ := patch.Try(gamePath, bytes); patched != nil {
-			gi.Size = int64(len(*patched))
-			gi.SetData(*patched)
-		} else {
-			gi.SetData(bytes)
-		}
+		gi.SetData(bytes)
 	}
 
 	ok := state.Core.LoadGame(*gi)
 	if !ok {
-		state.CoreRunning = false
 		return errors.New("failed to load the game")
 	}
 
@@ -164,19 +152,10 @@ func LoadGame(gamePath string) error {
 
 	vid.Geom = avi.Geometry
 
-	// Append the library name to the window title.
-	if len(si.LibraryName) > 0 {
-		vid.SetTitle("Ludo - " + si.LibraryName)
-	}
-
-	input.Init(vid)
-	audio.Reconfigure(int32(avi.Timing.SampleRate))
 	if state.Core.AudioCallback != nil {
 		state.Core.AudioCallback.SetState(true)
 	}
 
-	state.CoreRunning = true
-	state.FastForward = false
 	state.GamePath = gamePath
 
 	state.Core.SetControllerPortDevice(0, libretro.DeviceJoypad)
@@ -185,8 +164,8 @@ func LoadGame(gamePath string) error {
 	state.Core.SetControllerPortDevice(3, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(4, libretro.DeviceJoypad)
 
-	log.Println("[Core]: Game loaded: " + gamePath)
-	savefiles.LoadSRAM()
+	fmt.Println("[Core]: Game loaded: " + gamePath)
+	//savefiles.LoadSRAM()
 
 	return nil
 }
@@ -204,14 +183,11 @@ func Unload() {
 
 // UnloadGame unloads a game.
 func UnloadGame() {
-	if state.CoreRunning {
-		savefiles.SaveSRAM()
-		state.Core.UnloadGame()
-		state.GamePath = ""
-		state.CoreRunning = false
-		vid.ResetPitch()
-		vid.ResetRot()
-	}
+	//savefiles.SaveSRAM()
+	state.Core.UnloadGame()
+	state.GamePath = ""
+	vid.ResetPitch()
+	vid.ResetRot()
 }
 
 // getGameInfo opens a rom and return the libretro.GameInfo needed to launch it
