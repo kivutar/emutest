@@ -20,16 +20,8 @@ import (
 	"github.com/libretro/ludo/libretro"
 )
 
-var vid *video.Video
-
 // Options holds the settings for the current core
 var Options *options.Options
-
-// Init is there mainly for dependency injection.
-// Call Init before calling other functions of this package.
-func Init(v *video.Video) {
-	vid = v
-}
 
 // Load loads a libretro core
 func Load(sofile string) error {
@@ -47,7 +39,7 @@ func Load(sofile string) error {
 	}
 	state.Core.SetEnvironment(environment)
 	state.Core.Init()
-	state.Core.SetVideoRefresh(vid.Refresh)
+	state.Core.SetVideoRefresh(video.Refresh)
 	state.Core.SetInputPoll(input.Poll)
 	state.Core.SetInputState(input.State)
 	state.Core.SetAudioSample(audio.Sample)
@@ -150,7 +142,7 @@ func LoadGame(gamePath string) error {
 
 	avi := state.Core.GetSystemAVInfo()
 
-	vid.Geom = avi.Geometry
+	video.Geom = avi.Geometry
 
 	if state.Core.AudioCallback != nil {
 		state.Core.AudioCallback.SetState(true)
@@ -186,8 +178,6 @@ func UnloadGame() {
 	//savefiles.SaveSRAM()
 	state.Core.UnloadGame()
 	state.GamePath = ""
-	vid.ResetPitch()
-	vid.ResetRot()
 }
 
 // getGameInfo opens a rom and return the libretro.GameInfo needed to launch it

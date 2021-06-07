@@ -7,7 +7,6 @@ import (
 
 	"github.com/kivutar/emutest/core"
 	"github.com/kivutar/emutest/state"
-	"github.com/kivutar/emutest/video"
 )
 
 var frames = 0
@@ -35,26 +34,21 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 
-	var gamePath string
-	if len(args) > 0 {
-		gamePath = args[0]
-	}
-
-	vid := video.Init()
-	core.Init(vid)
+	gamePath := args[0]
 
 	err := core.Load(state.CorePath)
 	if err == nil {
 		err := core.LoadGame(gamePath)
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(1)
 		}
 	} else {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	runLoop()
 
-	// Unload and deinit in the core.
 	core.Unload()
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/kivutar/emutest/options"
 	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/video"
 	"github.com/libretro/ludo/libretro"
 )
 
@@ -41,7 +42,7 @@ func environmentGetVariable(data unsafe.Pointer) bool {
 
 func environmentSetPixelFormat(data unsafe.Pointer) bool {
 	format := libretro.GetPixelFormat(data)
-	return vid.SetPixelFormat(format)
+	return video.SetPixelFormat(format)
 }
 
 func environmentGetUsername(data unsafe.Pointer) bool {
@@ -131,7 +132,7 @@ func environmentSetCoreOptionsIntl(data unsafe.Pointer) bool {
 func environment(cmd uint32, data unsafe.Pointer) bool {
 	switch cmd {
 	case libretro.EnvironmentSetRotation:
-		return vid.SetRotation(*(*uint)(data))
+		return video.SetRotation(*(*uint)(data))
 	case libretro.EnvironmentGetUsername:
 		return environmentGetUsername(data)
 	case libretro.EnvironmentGetLogInterface:
@@ -166,10 +167,10 @@ func environment(cmd uint32, data unsafe.Pointer) bool {
 		libretro.SetBool(data, Options.Updated)
 		Options.Updated = false
 	case libretro.EnvironmentSetGeometry:
-		vid.Geom = libretro.GetGeometry(data)
+		video.Geom = libretro.GetGeometry(data)
 	case libretro.EnvironmentSetSystemAVInfo:
 		avi := libretro.GetSystemAVInfo(data)
-		vid.Geom = avi.Geometry
+		video.Geom = avi.Geometry
 	case libretro.EnvironmentGetFastforwarding:
 		libretro.SetBool(data, false)
 	case libretro.EnvironmentGetLanguage:
