@@ -14,6 +14,10 @@ import (
 	"github.com/kivutar/emutest/utils"
 	"github.com/libretro/ludo/libretro"
 )
+import (
+	"crypto/sha1"
+	"fmt"
+)
 
 var mutex sync.Mutex
 
@@ -22,6 +26,24 @@ func path() string {
 	return filepath.Join(
 		state.SavefilesDirectory,
 		utils.FileName(state.GamePath)+".srm")
+}
+
+// DumpSRAM prints the content of the SRAM
+func DumpSRAM() {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	len := state.Core.GetMemorySize(libretro.MemorySaveRAM)
+	ptr := state.Core.GetMemoryData(libretro.MemorySaveRAM)
+	if ptr == nil || len == 0 {
+		fmt.Printf("[SRAM]: %d Unable to get RAM address\n", state.Frame)
+		return
+	}
+
+	// convert the C array to a go slice
+	bytes := C.GoBytes(ptr, C.int(len))
+
+	fmt.Printf("[SRAM]: %d %x\n", state.Frame, sha1.Sum(bytes))
 }
 
 // SaveSRAM saves the game SRAM to the filesystem

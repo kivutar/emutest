@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/kivutar/emutest/core"
+	"github.com/kivutar/emutest/savefiles"
 	"github.com/kivutar/emutest/state"
 )
 
@@ -20,6 +21,8 @@ func runLoop() {
 		if state.Core.AudioCallback != nil {
 			state.Core.AudioCallback.Callback()
 		}
+
+		savefiles.DumpSRAM()
 
 		state.Frame++
 	}
