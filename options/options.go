@@ -109,7 +109,7 @@ func (o *Options) load() error {
 	}
 
 	name := utils.FileName(state.CorePath)
-	b, err := ioutil.ReadFile(filepath.Join(home, ".ludo", name+".toml"))
+	b, err := ioutil.ReadFile(filepath.Join(home, "emutest", name+".toml"))
 	if err != nil {
 		return err
 	}
