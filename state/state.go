@@ -19,6 +19,9 @@ var Frame int
 // NFrames is the number of frames to execute
 var NFrames int
 
+// SkipFrames is the number of frames to skip before doing stuff
+var SkipFrames int
+
 // CorePath is the path of the current libretro core
 var CorePath string
 
