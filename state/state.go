@@ -5,9 +5,9 @@ package state
 import (
 	"os"
 
-	"github.com/libretro/ludo/libretro"
-
 	"path/filepath"
+
+	"github.com/libretro/ludo/libretro"
 )
 
 // Core is the current libretro core, if any is loaded
@@ -27,6 +27,9 @@ var CorePath string
 
 // GamePath is the path of the current game
 var GamePath string
+
+// StatePath is the path of the savestate to load after frames are skipped
+var StatePath string
 
 var HomeDirectory, _ = os.UserHomeDir()
 
