@@ -31,6 +31,9 @@ var GamePath string
 // StatePath is the path of the savestate to load after frames are skipped
 var StatePath string
 
+// OptionsPath is a path to a toml core option file
+var OptionsPath string
+
 var HomeDirectory, _ = os.UserHomeDir()
 
 var SavestatesDirectory = filepath.Join(HomeDirectory, "emutest", "savestates")

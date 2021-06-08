@@ -4,11 +4,7 @@
 package options
 
 import (
-	"bytes"
-	"io"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 
@@ -64,52 +60,16 @@ func New(vars []VariableInterface) (*Options, error) {
 	return o, err
 }
 
-// Save core options to a file
-func (o *Options) Save() error {
-	o.Lock()
-	defer o.Unlock()
-
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-
-	m := make(map[string]string)
-	for _, v := range o.Vars {
-		m[strings.Replace(v.Key, ".", "___", 1)] = v.Choices[v.Choice]
-	}
-	b, err := toml.Marshal(m)
-	if err != nil {
-		return err
-	}
-
-	name := utils.FileName(state.CorePath)
-	fd, err := os.Create(filepath.Join(home, "emutest", name+".toml"))
-	if err != nil {
-		return err
-	}
-	defer fd.Close()
-
-	_, err = io.Copy(fd, bytes.NewReader(b))
-	if err != nil {
-		return err
-	}
-
-	return fd.Sync()
-}
-
 // Load core options from a file
 func (o *Options) load() error {
 	o.Lock()
 	defer o.Unlock()
 
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return err
+	if state.OptionsPath == "" {
+		return nil
 	}
 
-	name := utils.FileName(state.CorePath)
-	b, err := ioutil.ReadFile(filepath.Join(home, "emutest", name+".toml"))
+	b, err := ioutil.ReadFile(state.OptionsPath)
 	if err != nil {
 		return err
 	}

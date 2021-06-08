@@ -46,6 +46,7 @@ func main() {
 	flag.IntVar(&state.SkipFrames, "skip", 0, "Number of frames to skip before any action")
 	flag.IntVar(&state.NFrames, "nframes", 1, "Number of frames to execute")
 	flag.StringVar(&state.StatePath, "loadstate", "", "Path to a savestate to load right after the skipped frames")
+	flag.StringVar(&state.OptionsPath, "options", "", "Path to a savestate to a core option toml file")
 	flag.Parse()
 	args := flag.Args()
 
