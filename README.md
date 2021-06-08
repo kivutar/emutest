@@ -1,13 +1,13 @@
 # emutest
 
-A simple test framework for libretro cores
+A simple test framework for libretro cores.
 
 `emutest` can run a certain number of frames, and dump data like the content of the video framebuffer, or the system RAM.
 
 ## Setup
 
 ```
-go install github.com/kivutar/emutest
+go install github.com/kivutar/emutest@latest
 ```
 
 ## Usage:
@@ -15,7 +15,7 @@ go install github.com/kivutar/emutest
 Example:
 
 ```
-emutest -skip 10 -nframes 5 -loadstate game.state -L fceumm_libretro.dylib game.nes
+emutest -skip 10 -nframes 5 -loadstate game.state -L fceumm_libretro.so game.nes
 ```
 
 Usage:
