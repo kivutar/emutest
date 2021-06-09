@@ -25,9 +25,6 @@ var Options *options.Options
 
 // Load loads a libretro core
 func Load(sofile string) error {
-	// This must be set before the environment callback is called
-	state.CorePath = sofile
-
 	var err error
 	state.Core, err = libretro.Load(sofile)
 	if err != nil {
@@ -138,8 +135,6 @@ func LoadGame(gamePath string) error {
 		state.Core.AudioCallback.SetState(true)
 	}
 
-	state.GamePath = gamePath
-
 	state.Core.SetControllerPortDevice(0, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(1, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(2, libretro.DeviceJoypad)
@@ -157,7 +152,6 @@ func Unload() {
 	if state.Core != nil {
 		UnloadGame()
 		state.Core.Deinit()
-		state.CorePath = ""
 		state.Core = nil
 		Options = nil
 	}
@@ -167,7 +161,6 @@ func Unload() {
 func UnloadGame() {
 	//savefiles.SaveSRAM()
 	state.Core.UnloadGame()
-	state.GamePath = ""
 }
 
 // getGameInfo opens a rom and return the libretro.GameInfo needed to launch it

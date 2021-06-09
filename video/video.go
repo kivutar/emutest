@@ -7,13 +7,12 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/kivutar/emutest/state"
 	"github.com/libretro/ludo/libretro"
-
-	"crypto/sha1"
 )
 
 var Geom libretro.GameGeometry
+var Width, Height, Pitch int32
+var fb []byte
 
 // SetPixelFormat is a callback passed to the libretro implementation.
 // It allows the core or the game to tell us which pixel format should be used for the display.
@@ -24,10 +23,16 @@ func SetPixelFormat(format uint32) bool {
 
 // Refresh the texture framebuffer
 func Refresh(data unsafe.Pointer, width int32, height int32, pitch int32) {
-	n := height * pitch
-	bytes := (*[1 << 30]byte)(data)[:n:n]
+	Width = width
+	Height = height
+	Pitch = pitch
 
-	fmt.Printf("[Video]: Refresh: %d %d %d %d %x\n", state.Frame, width, height, pitch, sha1.Sum(bytes))
+	n := height * pitch
+	fb = (*[1 << 30]byte)(data)[:n:n]
+}
+
+func DumpFramebuffer() []byte {
+	return fb
 }
 
 // SetRotation rotates the game image as requested by the core

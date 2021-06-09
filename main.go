@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Shopify/go-lua"
 	"github.com/kivutar/emutest/core"
 	"github.com/kivutar/emutest/savefiles"
 	"github.com/kivutar/emutest/savestates"
 	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/video"
 )
 
 func run() {
@@ -21,18 +23,6 @@ func run() {
 	}
 }
 
-func runLoop() {
-	for state.Frame < state.NFrames {
-		// poll inputs here
-
-		run()
-
-		savefiles.DumpSRAM()
-
-		state.Frame++
-	}
-}
-
 func exitOnErr(err error) {
 	if err != nil {
 		fmt.Println(err)
@@ -40,13 +30,48 @@ func exitOnErr(err error) {
 	}
 }
 
+func registerFuncs(l *lua.State) {
+	l.Register("run", func(l *lua.State) int {
+		run()
+		return 0
+	})
+	l.Register("dump_sram", func(l *lua.State) int {
+		sram := savefiles.GetSRAM()
+		l.PushString(string(sram[:]))
+		return 1
+	})
+	l.Register("dump_video", func(l *lua.State) int {
+		fb := video.DumpFramebuffer()
+		l.PushInteger(int(video.Width))
+		l.PushInteger(int(video.Height))
+		l.PushInteger(int(video.Pitch))
+		l.PushString(string(fb[:]))
+		return 4
+	})
+	l.Register("load_state", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		savestates.Load(path)
+		return 0
+	})
+	l.Register("load_core", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		core.Load(path)
+		return 0
+	})
+	l.Register("load_game", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		core.LoadGame(path)
+		return 0
+	})
+	l.Register("set_options", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		state.OptionsPath = path
+		return 0
+	})
+}
+
 func main() {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
-	flag.StringVar(&state.CorePath, "L", "", "Path to the libretro core")
-	flag.IntVar(&state.SkipFrames, "skip", 0, "Number of frames to skip before any action")
-	flag.IntVar(&state.NFrames, "nframes", 1, "Number of frames to execute")
-	flag.StringVar(&state.StatePath, "loadstate", "", "Path to a savestate to load right after the skipped frames")
-	flag.StringVar(&state.OptionsPath, "options", "", "Path to a savestate to a core option toml file")
 	flag.Parse()
 	args := flag.Args()
 
@@ -54,21 +79,12 @@ func main() {
 		return
 	}
 
-	gamePath := args[0]
-
-	exitOnErr(core.Load(state.CorePath))
-	exitOnErr(core.LoadGame(gamePath))
-
-	for i := 0; i < state.SkipFrames; i++ {
-		fmt.Print("[Skipping]: ")
-		run()
+	l := lua.NewState()
+	lua.OpenLibraries(l)
+	registerFuncs(l)
+	if err := lua.DoFile(l, args[0]); err != nil {
+		exitOnErr(err)
 	}
-
-	if state.StatePath != "" {
-		exitOnErr(savestates.Load(state.StatePath))
-	}
-
-	runLoop()
 
 	core.Unload()
 }

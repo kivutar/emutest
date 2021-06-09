@@ -1,4 +1,6 @@
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
+github.com/Shopify/go-lua v0.0.0-20210302141115-d8ac5566562d h1:t4Z/l2BS7t3Yi/WUhAR+193R1a/lCP6WkNRblY712zo=
+github.com/Shopify/go-lua v0.0.0-20210302141115-d8ac5566562d/go.mod h1:lvS2IGWEGk+KQkRrCXuWlcsHO5BitT0HyhnP51rh3gA=
 github.com/cavaliercoder/grab v2.0.0+incompatible/go.mod h1:tTBkfNqSBfuMmMBFaO2phgyhdYhiZQ/+iXCZDzcDsMI=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
