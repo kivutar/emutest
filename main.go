@@ -98,6 +98,15 @@ func registerFuncs(l *lua.State) {
 		state.OptionsToml = toml
 		return 0
 	})
+	l.Register("screenshot", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		err := video.Screenshot(path)
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
+		return 0
+	})
 }
 
 func main() {

@@ -20,3 +20,5 @@ local state = get_state()
 if string.len(state) ~= 542720 then
 	error("wrong savestate size")
 end
+
+screenshot("../mkart.png")
