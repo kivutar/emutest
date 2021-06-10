@@ -16,6 +16,9 @@ var Core *libretro.Core
 // OptionsPath is a path to a toml core option file
 var OptionsPath string
 
+// OptionsToml is a toml string containing core options
+var OptionsToml string
+
 var HomeDirectory, _ = os.UserHomeDir()
 
 var SavestatesDirectory = filepath.Join(HomeDirectory, "emutest", "savestates")

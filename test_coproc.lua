@@ -1,6 +1,6 @@
-set_options("/Users/kivutar/.ludo/mesens_libretro.toml")
-load_core("/Users/kivutar/mesens/Libretro/mesens_libretro.dylib")
-load_game("/Users/kivutar/roms/Nintendo - Super Nintendo Entertainment System/Super Mario Kart (Europe).zip")
+set_options_toml("mesen-s_hle_coprocessor = \"enabled\"")
+load_core("../mesens/Libretro/mesens_libretro.dylib")
+load_game("../roms/Nintendo - Super Nintendo Entertainment System/Super Mario Kart (Europe).zip")
 
 for i=1,20 do run() end
 local _, _, _, frame1 = dump_video()

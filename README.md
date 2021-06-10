@@ -15,19 +15,20 @@ go install github.com/kivutar/emutest@latest
 Example:
 
 ```
-emutest -skip 10 -nframes 5 -loadstate game.state -L fceumm_libretro.so game.nes
+emutest test_coproc.lua
 ```
 
-Usage:
+With a test file testcoproc.lua:
 
 ```
-Usage of ./emutest:
-  -L string
-    	Path to the libretro core
-  -loadstate string
-    	Path to a savestate to load right after the skipped frames
-  -nframes int
-    	Number of frames to execute (default 1)
-  -skip int
-    	Number of frames to skip before any action
+set_options_toml("mesen-s_hle_coprocessor = \"enabled\"")
+load_core("../mesens/Libretro/mesens_libretro.dylib")
+load_game("../roms/Nintendo - Super Nintendo Entertainment System/Super Mario Kart (Europe).zip")
+
+for i=1,20 do run() end
+local _, _, _, frame1 = dump_video()
+for i=1,500 do run() end
+local _, _, _, frame2 = dump_video()
+if frame1 == frame2 then error("hle coproc not working") end
+
 ```

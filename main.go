@@ -63,9 +63,14 @@ func registerFuncs(l *lua.State) {
 		core.LoadGame(path)
 		return 0
 	})
-	l.Register("set_options", func(l *lua.State) int {
+	l.Register("set_options_file", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
 		state.OptionsPath = path
+		return 0
+	})
+	l.Register("set_options_toml", func(l *lua.State) int {
+		toml := lua.CheckString(l, 1)
+		state.OptionsToml = toml
 		return 0
 	})
 }
