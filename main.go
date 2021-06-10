@@ -54,17 +54,38 @@ func registerFuncs(l *lua.State) {
 	})
 	l.Register("load_state", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
-		savestates.Load(path)
+		err := savestates.Load(path)
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
 		return 0
+	})
+	l.Register("get_state", func(l *lua.State) int {
+		s, err := savestates.Get()
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
+		l.PushString(string(s[:]))
+		return 1
 	})
 	l.Register("load_core", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
-		core.Load(path)
+		err := core.Load(path)
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
 		return 0
 	})
 	l.Register("load_game", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
-		core.LoadGame(path)
+		err := core.LoadGame(path)
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
 		return 0
 	})
 	l.Register("set_options_file", func(l *lua.State) int {

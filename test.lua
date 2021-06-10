@@ -1,4 +1,4 @@
-set_options("/Users/kivutar/.ludo/mesen_libretro.toml")
+set_options_file("/Users/kivutar/.ludo/mesen_libretro.toml")
 load_core("/Users/kivutar/mesen/Libretro/mesen_libretro.dylib")
 load_game("/Users/kivutar/roms/Nintendo - Nintendo Entertainment System/Micro Mages.zip")
 

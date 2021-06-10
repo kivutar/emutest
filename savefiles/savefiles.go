@@ -20,9 +20,7 @@ func GetSRAM() []byte {
 	}
 
 	// convert the C array to a go slice
-	bytes := C.GoBytes(ptr, C.int(len))
-
-	return bytes
+	return C.GoBytes(ptr, C.int(len))
 }
 
 // LoadSRAM saves the game SRAM to the filesystem
