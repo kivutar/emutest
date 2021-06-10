@@ -40,11 +40,11 @@ func Load(sofile string) error {
 
 	si := state.Core.GetSystemInfo()
 	if len(si.LibraryName) > 0 {
-		fmt.Println("[Core]: Name:", si.LibraryName)
-		fmt.Println("[Core]: Version:", si.LibraryVersion)
-		fmt.Println("[Core]: Valid extensions:", si.ValidExtensions)
-		fmt.Println("[Core]: Need fullpath:", si.NeedFullpath)
-		fmt.Println("[Core]: Block extract:", si.BlockExtract)
+		Logs += fmt.Sprintln("[Core]: Name:", si.LibraryName)
+		Logs += fmt.Sprintln("[Core]: Version:", si.LibraryVersion)
+		Logs += fmt.Sprintln("[Core]: Valid extensions:", si.ValidExtensions)
+		Logs += fmt.Sprintln("[Core]: Need fullpath:", si.NeedFullpath)
+		Logs += fmt.Sprintln("[Core]: Block extract:", si.BlockExtract)
 	}
 
 	return nil
@@ -141,8 +141,7 @@ func LoadGame(gamePath string) error {
 	state.Core.SetControllerPortDevice(3, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(4, libretro.DeviceJoypad)
 
-	fmt.Println("[Core]: Game loaded: " + gamePath)
-	//savefiles.LoadSRAM()
+	Logs += fmt.Sprintln("[Core]: Game loaded: " + gamePath)
 
 	return nil
 }

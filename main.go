@@ -35,18 +35,22 @@ func registerFuncs(l *lua.State) {
 		run()
 		return 0
 	})
-	l.Register("dump_sram", func(l *lua.State) int {
+	l.Register("get_sram", func(l *lua.State) int {
 		sram := savefiles.GetSRAM()
 		l.PushString(string(sram[:]))
 		return 1
 	})
-	l.Register("dump_video", func(l *lua.State) int {
-		fb := video.DumpFramebuffer()
+	l.Register("get_video", func(l *lua.State) int {
+		fb := video.Framebuffer
 		l.PushInteger(int(video.Width))
 		l.PushInteger(int(video.Height))
 		l.PushInteger(int(video.Pitch))
 		l.PushString(string(fb[:]))
 		return 4
+	})
+	l.Register("get_logs", func(l *lua.State) int {
+		l.PushString(string(core.Logs[:]))
+		return 1
 	})
 	l.Register("load_state", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)

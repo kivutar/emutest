@@ -21,8 +21,10 @@ var logLevels = map[uint32]string{
 	libretro.LogLevelDummy: "DUMMY",
 }
 
+var Logs string
+
 func logCallback(level uint32, str string) {
-	fmt.Printf("[%s]: %s", logLevels[level], str)
+	Logs += fmt.Sprintf("[%s]: %s", logLevels[level], str)
 }
 
 func getTimeUsec() int64 {
