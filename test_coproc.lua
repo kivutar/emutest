@@ -22,3 +22,9 @@ if string.len(state) ~= 542720 then
 end
 
 screenshot("../mkart.png")
+
+set_inputs(1, "0001000000000000") -- press start for player 1
+
+for i=1,60 do run() end
+
+screenshot("../mkart2.png")

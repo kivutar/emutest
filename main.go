@@ -7,6 +7,7 @@ import (
 
 	"github.com/Shopify/go-lua"
 	"github.com/kivutar/emutest/core"
+	"github.com/kivutar/emutest/input"
 	"github.com/kivutar/emutest/savefiles"
 	"github.com/kivutar/emutest/savestates"
 	"github.com/kivutar/emutest/state"
@@ -114,6 +115,12 @@ func registerFuncs(l *lua.State) {
 			l.PushString(err.Error())
 			l.Error()
 		}
+		return 0
+	})
+	l.Register("set_inputs", func(l *lua.State) int {
+		port := lua.CheckUnsigned(l, 1)
+		values := lua.CheckString(l, 1)
+		input.SetState(port, values)
 		return 0
 	})
 }
