@@ -10,6 +10,7 @@ import (
 
 	"github.com/kivutar/emutest/state"
 	"github.com/kivutar/emutest/utils"
+
 	"github.com/pelletier/go-toml"
 )
 
@@ -65,19 +66,27 @@ func (o *Options) load() error {
 	o.Lock()
 	defer o.Unlock()
 
-	if state.OptionsPath == "" {
+	if state.OptionsPath == "" && state.OptionsToml == "" {
 		return nil
 	}
 
-	b, err := ioutil.ReadFile(state.OptionsPath)
-	if err != nil {
-		return err
+	var opts map[string]string
+
+	if state.OptionsPath != "" {
+		b, err := ioutil.ReadFile(state.OptionsPath)
+		if err != nil {
+			return err
+		}
+
+		if err := toml.Unmarshal(b, &opts); err != nil {
+			return err
+		}
 	}
 
-	var opts map[string]string
-	err = toml.Unmarshal(b, &opts)
-	if err != nil {
-		return err
+	if state.OptionsToml != "" {
+		if err := toml.Unmarshal([]byte(state.OptionsToml), &opts); err != nil {
+			return err
+		}
 	}
 
 	for optk, optv := range opts {

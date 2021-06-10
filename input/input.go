@@ -28,7 +28,12 @@ var (
 
 // Poll calculates the input state. It is meant to be called for each frame.
 func Poll() {
-	NewState = States{}
+}
+
+func SetState(port uint, values string) {
+	for i, char := range []byte(values) {
+		NewState[port][i] = int16(char)
+	}
 }
 
 // State is a callback passed to core.SetInputState
@@ -40,14 +45,13 @@ func State(port uint, device uint32, index uint, id uint) int16 {
 
 	if device == libretro.DeviceJoypad {
 		if id >= uint(ActionLast) || index > 0 {
-			return 0
+			return 0 // invalid
 		}
 		return NewState[port][id]
 	}
 	if device == libretro.DeviceAnalog {
 		if id > 1 || index > 1 {
-			// invalid
-			return 0
+			return 0 // invalid
 		}
 
 		return NewAnalogState[port][index][id]

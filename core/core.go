@@ -17,6 +17,7 @@ import (
 	"github.com/kivutar/emutest/options"
 	"github.com/kivutar/emutest/state"
 	"github.com/kivutar/emutest/video"
+
 	"github.com/libretro/ludo/libretro"
 )
 
@@ -25,9 +26,6 @@ var Options *options.Options
 
 // Load loads a libretro core
 func Load(sofile string) error {
-	// This must be set before the environment callback is called
-	state.CorePath = sofile
-
 	var err error
 	state.Core, err = libretro.Load(sofile)
 	if err != nil {
@@ -43,11 +41,11 @@ func Load(sofile string) error {
 
 	si := state.Core.GetSystemInfo()
 	if len(si.LibraryName) > 0 {
-		fmt.Println("[Core]: Name:", si.LibraryName)
-		fmt.Println("[Core]: Version:", si.LibraryVersion)
-		fmt.Println("[Core]: Valid extensions:", si.ValidExtensions)
-		fmt.Println("[Core]: Need fullpath:", si.NeedFullpath)
-		fmt.Println("[Core]: Block extract:", si.BlockExtract)
+		Logs += fmt.Sprintln("[Core]: Name:", si.LibraryName)
+		Logs += fmt.Sprintln("[Core]: Version:", si.LibraryVersion)
+		Logs += fmt.Sprintln("[Core]: Valid extensions:", si.ValidExtensions)
+		Logs += fmt.Sprintln("[Core]: Need fullpath:", si.NeedFullpath)
+		Logs += fmt.Sprintln("[Core]: Block extract:", si.BlockExtract)
 	}
 
 	return nil
@@ -138,16 +136,13 @@ func LoadGame(gamePath string) error {
 		state.Core.AudioCallback.SetState(true)
 	}
 
-	state.GamePath = gamePath
-
 	state.Core.SetControllerPortDevice(0, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(1, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(2, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(3, libretro.DeviceJoypad)
 	state.Core.SetControllerPortDevice(4, libretro.DeviceJoypad)
 
-	fmt.Println("[Core]: Game loaded: " + gamePath)
-	//savefiles.LoadSRAM()
+	Logs += fmt.Sprintln("[Core]: Game loaded: " + gamePath)
 
 	return nil
 }
@@ -157,7 +152,6 @@ func Unload() {
 	if state.Core != nil {
 		UnloadGame()
 		state.Core.Deinit()
-		state.CorePath = ""
 		state.Core = nil
 		Options = nil
 	}
@@ -167,7 +161,6 @@ func Unload() {
 func UnloadGame() {
 	//savefiles.SaveSRAM()
 	state.Core.UnloadGame()
-	state.GamePath = ""
 }
 
 // getGameInfo opens a rom and return the libretro.GameInfo needed to launch it

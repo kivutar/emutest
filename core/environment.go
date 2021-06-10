@@ -10,6 +10,7 @@ import (
 	"github.com/kivutar/emutest/options"
 	"github.com/kivutar/emutest/state"
 	"github.com/kivutar/emutest/video"
+
 	"github.com/libretro/ludo/libretro"
 )
 
@@ -21,8 +22,10 @@ var logLevels = map[uint32]string{
 	libretro.LogLevelDummy: "DUMMY",
 }
 
+var Logs string
+
 func logCallback(level uint32, str string) {
-	fmt.Printf("[%s]: %s", logLevels[level], str)
+	Logs += fmt.Sprintf("[%s]: %s", logLevels[level], str)
 }
 
 func getTimeUsec() int64 {

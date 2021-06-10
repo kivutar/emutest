@@ -1,41 +1,3 @@
-# emutest
-
-A simple test framework for libretro cores.
-
-Features:
-
- * Lua scriptable
- * Load core using dlopen
- * Load games
- * Run core
- * Dump video framebuffer
- * Dump video geometry and pitch
- * Dump SRAM
- * Load SRAM
- * Dump Savestate
- * Load Savestate
- * Set core options
- * Set inputs for any player at any frame
- * Record and filter core logs
- * Screenshots
-
-## Setup
-
-```
-go install github.com/kivutar/emutest@latest
-```
-
-## Usage:
-
-Example:
-
-```
-emutest test_coproc.lua
-```
-
-With a test file testcoproc.lua:
-
-```
 set_options_string("mesen-s_hle_coprocessor = \"enabled\"")
 load_core("../mesens/Libretro/mesens_libretro.dylib")
 load_game("../roms/Nintendo - Super Nintendo Entertainment System/Super Mario Kart (Europe).zip")
@@ -66,4 +28,3 @@ set_inputs(1, "0001000000000000") -- press start for player 1
 for i=1,60 do run() end
 
 screenshot("../mkart2.png")
-```
