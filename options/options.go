@@ -10,6 +10,7 @@ import (
 
 	"github.com/kivutar/emutest/state"
 	"github.com/kivutar/emutest/utils"
+
 	"github.com/pelletier/go-toml"
 )
 

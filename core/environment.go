@@ -10,6 +10,7 @@ import (
 	"github.com/kivutar/emutest/options"
 	"github.com/kivutar/emutest/state"
 	"github.com/kivutar/emutest/video"
+
 	"github.com/libretro/ludo/libretro"
 )
 

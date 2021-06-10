@@ -4,7 +4,6 @@ package state
 
 import (
 	"os"
-
 	"path/filepath"
 
 	"github.com/libretro/ludo/libretro"

@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Shopify/go-lua"
 	"github.com/kivutar/emutest/core"
 	"github.com/kivutar/emutest/input"
 	"github.com/kivutar/emutest/savefiles"
 	"github.com/kivutar/emutest/savestates"
 	"github.com/kivutar/emutest/state"
 	"github.com/kivutar/emutest/video"
+
+	"github.com/Shopify/go-lua"
 )
 
 func run() {
