@@ -40,6 +40,15 @@ func registerFuncs(l *lua.State) {
 		l.PushString(string(sram[:]))
 		return 1
 	})
+	l.Register("load_sram", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		err := savefiles.LoadSRAM(path)
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
+		return 0
+	})
 	l.Register("get_video", func(l *lua.State) int {
 		fb := video.Framebuffer
 		l.PushInteger(int(video.Width))
@@ -93,7 +102,7 @@ func registerFuncs(l *lua.State) {
 		state.OptionsPath = path
 		return 0
 	})
-	l.Register("set_options_toml", func(l *lua.State) int {
+	l.Register("set_options_string", func(l *lua.State) int {
 		toml := lua.CheckString(l, 1)
 		state.OptionsToml = toml
 		return 0

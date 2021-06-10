@@ -11,6 +11,7 @@ Features:
  * Dump video framebuffer
  * Dump video geometry and pitch
  * Dump SRAM
+ * Load SRAM
  * Dump Savestate
  * Load Savestate
  * Set core options
@@ -34,7 +35,7 @@ emutest test_coproc.lua
 With a test file testcoproc.lua:
 
 ```
-set_options_toml("mesen-s_hle_coprocessor = \"enabled\"")
+set_options_string("mesen-s_hle_coprocessor = \"enabled\"")
 load_core("../mesens/Libretro/mesens_libretro.dylib")
 load_game("../roms/Nintendo - Super Nintendo Entertainment System/Super Mario Kart (Europe).zip")
 
