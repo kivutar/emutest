@@ -15,6 +15,7 @@ Features:
  * Dump Savestate
  * Load Savestate
  * Set core options
+ * Set inputs for any player at any frame
  * Record and filter core logs
  * Screenshots
 
