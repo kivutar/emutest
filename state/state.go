@@ -20,8 +20,5 @@ var OptionsPath string
 var OptionsToml string
 
 var HomeDirectory, _ = os.UserHomeDir()
-
-var SavestatesDirectory = filepath.Join(HomeDirectory, "emutest", "savestates")
 var SavefilesDirectory = filepath.Join(HomeDirectory, "emutest", "savefiles")
-var ScreenshotsDirectory = filepath.Join(HomeDirectory, "emutest", "screenshots")
 var SystemDirectory = filepath.Join(HomeDirectory, "emutest", "system")
