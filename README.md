@@ -33,7 +33,7 @@ Example:
 emutest test_coproc.lua
 ```
 
-With a test file testcoproc.lua:
+With a test file test_coproc.lua:
 
 ```
 set_options_string("mesen-s_hle_coprocessor = \"enabled\"")
