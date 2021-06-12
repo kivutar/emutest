@@ -159,7 +159,6 @@ func Unload() {
 
 // UnloadGame unloads a game.
 func UnloadGame() {
-	//savefiles.SaveSRAM()
 	state.Core.UnloadGame()
 }
 
