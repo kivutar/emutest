@@ -68,6 +68,8 @@ for i=1,60 do run() end
 screenshot("../mkart2.png")
 ```
 
+To run the same test on a full set of ROMs in parallel:
+
 ```
-find "/Users/kivutar/Downloads/Nintendo - Nintendo Entertainment System [Headered]" -type f -name '*.zip' | parallel -j 8 ./emutest -L ~/mesen/Libretro/mesen_libretro.dylib -r {} -t boot200.lua
+find "./nesroms" -type f -name '*.zip' | parallel -j 8 ./emutest -L ~/mesen/Libretro/mesen_libretro.dylib -r {} -t boot200.lua
 ```
