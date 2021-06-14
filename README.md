@@ -30,7 +30,7 @@ go install github.com/kivutar/emutest@latest
 Example:
 
 ```
-emutest test_coproc.lua
+emutest -t test_coproc.lua
 ```
 
 With a test file test_coproc.lua:
@@ -66,4 +66,8 @@ set_inputs(1, "0001000000000000") -- press start for player 1
 for i=1,60 do run() end
 
 screenshot("../mkart2.png")
+```
+
+```
+find "/Users/kivutar/Downloads/Nintendo - Nintendo Entertainment System [Headered]" -type f -name '*.zip' | parallel -j 8 ./emutest -L ~/mesen/Libretro/mesen_libretro.dylib -r {} -t boot200.lua
 ```

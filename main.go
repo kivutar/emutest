@@ -10,6 +10,7 @@ import (
 	"github.com/kivutar/emutest/savefiles"
 	"github.com/kivutar/emutest/savestates"
 	"github.com/kivutar/emutest/state"
+	"github.com/kivutar/emutest/utils"
 	"github.com/kivutar/emutest/video"
 
 	"github.com/Shopify/go-lua"
@@ -132,18 +133,34 @@ func registerFuncs(l *lua.State) {
 
 func main() {
 	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	corePath := flag.String("L", "", "Path to the libretro core. Optional.")
+	romPath := flag.String("r", "", "Path to the ROM. Optional.")
+	testPath := flag.String("t", "", "Path to the test lua file")
 	flag.Parse()
-	args := flag.Args()
-
-	if len(args) == 0 {
-		return
-	}
 
 	l := lua.NewState()
 	lua.OpenLibraries(l)
 	registerFuncs(l)
-	if err := lua.DoFile(l, args[0]); err != nil {
-		exitOnErr(err)
+
+	if corePath != nil {
+		if err := lua.DoString(l, "corepath=\""+*corePath+"\""); err != nil {
+			exitOnErr(err)
+		}
+	}
+
+	if romPath != nil {
+		if err := lua.DoString(l, "rompath=\""+*romPath+"\""); err != nil {
+			exitOnErr(err)
+		}
+		if err := lua.DoString(l, "filename=\""+utils.FileName(*romPath)+"\""); err != nil {
+			exitOnErr(err)
+		}
+	}
+
+	if testPath != nil {
+		if err := lua.DoFile(l, *testPath); err != nil {
+			exitOnErr(err)
+		}
 	}
 
 	core.Unload()
