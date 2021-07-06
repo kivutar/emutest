@@ -104,6 +104,10 @@ func registerFuncs(l *lua.State) {
 		core.UnloadGame()
 		return 0
 	})
+	l.Register("reset", func(l *lua.State) int {
+		state.Core.Reset()
+		return 0
+	})
 	l.Register("set_options_file", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
 		state.OptionsPath = path
