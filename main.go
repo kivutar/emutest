@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"hash/crc32"
 	"os"
 
 	"github.com/kivutar/emutest/core"
@@ -59,6 +60,11 @@ func registerFuncs(l *lua.State) {
 		l.PushInteger(int(video.Pitch))
 		l.PushString(string(fb[:]))
 		return 4
+	})
+	l.Register("get_fb_crc", func(l *lua.State) int {
+		fb := video.Framebuffer
+		l.PushUnsigned(uint(crc32.ChecksumIEEE(fb[:])))
+		return 1
 	})
 	l.Register("get_logs", func(l *lua.State) int {
 		l.PushString(string(core.Logs[:]))
@@ -129,7 +135,7 @@ func registerFuncs(l *lua.State) {
 	})
 	l.Register("set_inputs", func(l *lua.State) int {
 		port := lua.CheckUnsigned(l, 1)
-		values := lua.CheckString(l, 1)
+		values := lua.CheckString(l, 2)
 		input.SetState(port, values)
 		return 0
 	})
@@ -166,6 +172,4 @@ func main() {
 			exitOnErr(err)
 		}
 	}
-
-	//core.Unload()
 }

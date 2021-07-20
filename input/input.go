@@ -3,7 +3,9 @@
 // takes care of binding and auto configuring joypads.
 package input
 
-import "github.com/libretro/ludo/libretro"
+import (
+	"github.com/libretro/ludo/libretro"
+)
 
 // MaxPlayers is the maximum number of players to poll input for
 const MaxPlayers = 5
@@ -31,7 +33,7 @@ func Poll() {
 }
 
 func SetState(port uint, values string) {
-	for i, char := range []byte(values) {
+	for i, char := range values {
 		NewState[port][i] = int16(char)
 	}
 }
