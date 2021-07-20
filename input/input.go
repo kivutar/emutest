@@ -34,7 +34,11 @@ func Poll() {
 
 func SetState(port uint, values string) {
 	for i, char := range values {
-		NewState[port][i] = int16(char)
+		if char == '1' {
+			NewState[port][i] = 1
+		} else {
+			NewState[port][i] = 0
+		}
 	}
 }
 
