@@ -79,7 +79,16 @@ func registerFuncs(l *lua.State) {
 		}
 		return 0
 	})
-	l.Register("get_state", func(l *lua.State) int {
+	l.Register("save_state", func(l *lua.State) int {
+		path := lua.CheckString(l, 1)
+		err := savestates.Save(path)
+		if err != nil {
+			l.PushString(err.Error())
+			l.Error()
+		}
+		return 0
+	})
+	l.Register("get_state_string", func(l *lua.State) int {
 		s, err := savestates.Get()
 		if err != nil {
 			l.PushString(err.Error())

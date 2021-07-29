@@ -4,6 +4,7 @@ package savestates
 
 import (
 	"io/ioutil"
+	"os"
 
 	"github.com/kivutar/emutest/state"
 )
@@ -23,4 +24,14 @@ func Load(path string) error {
 	}
 	err = state.Core.Unserialize(bytes, s)
 	return err
+}
+
+// Save the state to the filesystem
+func Save(path string) error {
+	s := state.Core.SerializeSize()
+	bytes, err := state.Core.Serialize(s)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, bytes, os.ModePerm)
 }
