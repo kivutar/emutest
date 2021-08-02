@@ -57,12 +57,12 @@ func New(vars []VariableInterface) (*Options, error) {
 		})
 	}
 	o.Updated = true
-	err := o.load()
+	err := o.Load()
 	return o, err
 }
 
 // Load core options from a file
-func (o *Options) load() error {
+func (o *Options) Load() error {
 	o.Lock()
 	defer o.Unlock()
 
