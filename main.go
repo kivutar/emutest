@@ -126,15 +126,19 @@ func registerFuncs(l *lua.State) {
 	l.Register("set_options_file", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
 		state.OptionsPath = path
-		core.Options.Load()
-		core.Options.Updated = true
+		if state.Core != nil {
+			core.Options.Load()
+			core.Options.Updated = true
+		}
 		return 0
 	})
 	l.Register("set_options_string", func(l *lua.State) int {
 		toml := lua.CheckString(l, 1)
 		state.OptionsToml = toml
-		core.Options.Load()
-		core.Options.Updated = true
+		if state.Core != nil {
+			core.Options.Load()
+			core.Options.Updated = true
+		}
 		return 0
 	})
 	l.Register("screenshot", func(l *lua.State) int {
