@@ -29,6 +29,10 @@ Not yet implemented:
  * Libretro Subsystems
  * Concurrent libretro cores loaded in the single test file
 
+Known limitations:
+
+ * Cores using libco will crash because of Go
+
 ## Setup
 
 ```
