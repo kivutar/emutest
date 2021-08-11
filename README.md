@@ -1,6 +1,6 @@
 # emutest
 
-A simple test framework for libretro cores.
+Emutest is a simple test framework for libretro cores. It embeds a small Lua VM so tests can be written in Lua. It is a Lua scriptable headless libretro frontend.
 
 Features:
 
@@ -9,6 +9,7 @@ Features:
  * Load games
  * Run core
  * Dump video framebuffer
+ * Get a checksum of the video framebuffer
  * Dump video geometry and pitch
  * Dump SRAM
  * Load SRAM
@@ -18,6 +19,15 @@ Features:
  * Set inputs for any player at any frame
  * Record and filter core logs
  * Screenshots
+ * Reset
+ * Unload
+
+Not yet implemented:
+
+ * Harware accelerated cores
+ * Analog inputs
+ * Libretro Subsystems
+ * Concurrent libretro cores loaded in the single test file
 
 ## Setup
 
@@ -30,10 +40,16 @@ go install github.com/kivutar/emutest@latest
 Example:
 
 ```
-emutest -t test_coproc.lua
+emutest -t path/to/random_test.lua
 ```
 
-With a test file test_coproc.lua:
+You can also pass the core and rom like this:
+
+```
+emutest -L path/to/core_libretro.so -r path/to/rom.bin -t path/to/test.lua
+```
+
+This is an example test file:
 
 ```
 set_options_string("mesen-s_hle_coprocessor = \"enabled\"")
@@ -61,12 +77,18 @@ end
 
 screenshot("../mkart.png")
 
-set_inputs(1, "0001000000000000") -- press start for player 1
+set_inputs(0, "0001000000000000") -- press start for player 1
 
 for i=1,60 do run() end
 
 screenshot("../mkart2.png")
+
+local crc = get_fb_crc()
+
+print(crc)
 ```
+
+You can find more test examples in the `examples` folder.
 
 To run the same test on a full set of ROMs in parallel:
 
