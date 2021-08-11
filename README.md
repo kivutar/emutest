@@ -53,7 +53,7 @@ This is an example test file:
 
 ```
 set_options_string("mesen-s_hle_coprocessor = \"enabled\"")
-load_core("../mesens/Libretro/mesens_libretro.dylib")
+load_core("../mesens/Libretro/mesens_libretro.so")
 load_game("../roms/Nintendo - Super Nintendo Entertainment System/Super Mario Kart (Europe).zip")
 
 local logs = get_logs()
@@ -93,5 +93,6 @@ You can find more test examples in the `examples` folder.
 To run the same test on a full set of ROMs in parallel:
 
 ```
-find "./nesroms" -type f -name '*.zip' | parallel -j 8 ./emutest -L ~/mesen/Libretro/mesen_libretro.dylib -r {} -t boot200.lua
+find "./nesroms" -type f -name '*.zip' | \
+parallel -j 8 ./emutest -L ~/mesen/Libretro/mesen_libretro.dylib -r {} -t boot200.lua
 ```
