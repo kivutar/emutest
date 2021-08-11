@@ -2,6 +2,8 @@
 
 Emutest is a simple test framework for libretro cores. It embeds a small Lua VM so tests can be written in Lua. It is a Lua scriptable headless libretro frontend.
 
+Emutest is not a unit test framework. It is more like an end to end test utility that you can use in combination with test ROMs like the z80 Master System test ROM, or the Genesis VDP test ROM. It does a good job at testing the integration of your emulator with a libretro frontend.
+
 Features:
 
  * Lua scriptable
