@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/kivutar/emutest/audio"
 	"github.com/kivutar/emutest/input"
@@ -92,7 +93,7 @@ func unzipGame(filename string) (string, int64, error) {
 		outFile.Close()
 		rc.Close()
 
-		if i == 0 {
+		if i == 0 || strings.Contains(path, ".cue") {
 			mainPath = path
 			mainSize = size
 		}
