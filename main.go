@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"hash/crc32"
 	"os"
+	"slices"
 
 	"github.com/kivutar/emutest/core"
 	"github.com/kivutar/emutest/input"
+	"github.com/kivutar/emutest/options"
 	"github.com/kivutar/emutest/savefiles"
 	"github.com/kivutar/emutest/savestates"
 	"github.com/kivutar/emutest/state"
@@ -140,6 +142,49 @@ func registerFuncs(l *lua.State) {
 			core.Options.Updated = true
 		}
 		return 0
+	})
+	l.Register("set_option", func(l *lua.State) int {
+		key := lua.CheckString(l, 1)
+		value := lua.CheckString(l, 2)
+		if state.Core == nil {
+			return 0
+		}
+
+		keyIndex := slices.IndexFunc(core.Options.Vars, func(v *options.Variable) bool {
+			return v.Key == key
+		})
+
+		if keyIndex == -1 {
+			return 0
+		}
+
+		valueIndex := slices.Index(core.Options.Vars[keyIndex].Choices, value)
+
+		if valueIndex != -1 {
+			core.Options.Vars[keyIndex].Choice = valueIndex
+			core.Options.Updated = true
+		}
+
+		return 0
+	})
+	l.Register("get_option", func(l *lua.State) int {
+		key := lua.CheckString(l, 1)
+		if state.Core == nil {
+			return 0
+		}
+
+		keyIndex := slices.IndexFunc(core.Options.Vars, func(v *options.Variable) bool {
+			return v.Key == key
+		})
+
+		if keyIndex == -1 {
+			return 0
+		}
+
+		variable := core.Options.Vars[keyIndex]
+		l.PushString(variable.Choices[variable.Choice])
+
+		return 1
 	})
 	l.Register("screenshot", func(l *lua.State) int {
 		path := lua.CheckString(l, 1)
