@@ -8,6 +8,7 @@ import (
 	"slices"
 
 	"github.com/kivutar/emutest/core"
+	"github.com/kivutar/emutest/debugging"
 	"github.com/kivutar/emutest/input"
 	"github.com/kivutar/emutest/options"
 	"github.com/kivutar/emutest/savefiles"
@@ -40,6 +41,17 @@ func registerFuncs(l *lua.State) {
 	l.Register("run", func(l *lua.State) int {
 		run()
 		return 0
+	})
+	l.Register("get_ram", func(l *lua.State) int {
+		sram := debugging.GetSystemRAM()
+		l.PushString(string(sram[:]))
+		return 1
+	})
+	l.Register("get_ram_byte", func(l *lua.State) int {
+		offset := lua.CheckInteger(l, 1)
+		sram := debugging.GetSystemRAM()
+		l.PushInteger(int(sram[offset]))
+		return 1
 	})
 	l.Register("get_sram", func(l *lua.State) int {
 		sram := savefiles.GetSRAM()
