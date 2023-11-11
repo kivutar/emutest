@@ -32,8 +32,8 @@ func run() {
 
 func exitOnErr(err error) {
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(-1)
 	}
 }
 
@@ -220,19 +220,24 @@ func main() {
 	corePath := flag.String("L", "", "Path to the libretro core. Optional.")
 	romPath := flag.String("r", "", "Path to the ROM. Optional.")
 	testPath := flag.String("t", "", "Path to the test lua file")
+	testRunner := flag.Bool("T", false, "Test runner mode (script must call os.exit)")
 	flag.Parse()
+	if !flag.Parsed() {
+		fmt.Fprintln(os.Stderr, "Error parsing flags")
+		os.Exit(-2)
+	}
 
 	l := lua.NewState()
 	lua.OpenLibraries(l)
 	registerFuncs(l)
 
-	if corePath != nil {
+	if *corePath != "" {
 		if err := lua.DoString(l, "corepath=\""+*corePath+"\""); err != nil {
 			exitOnErr(err)
 		}
 	}
 
-	if romPath != nil {
+	if *romPath != "" {
 		if err := lua.DoString(l, "rompath=\""+*romPath+"\""); err != nil {
 			exitOnErr(err)
 		}
@@ -241,9 +246,18 @@ func main() {
 		}
 	}
 
-	if testPath != nil {
-		if err := lua.DoFile(l, *testPath); err != nil {
+	if *testPath != "" {
+		err := lua.DoFile(l, *testPath)
+		if err != nil {
 			exitOnErr(err)
 		}
+	} else {
+		fmt.Fprintln(os.Stderr, "No test file specified")
+		os.Exit(-2)
+	}
+
+	if *testRunner {
+		fmt.Fprintln(os.Stderr, "Script did not call os.exit")
+		os.Exit(-3)
 	}
 }
