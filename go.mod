@@ -6,4 +6,4 @@ require (
 	github.com/pelletier/go-toml v1.9.1
 )
 
-go 1.18
+go 1.21
