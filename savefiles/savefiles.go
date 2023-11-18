@@ -11,6 +11,7 @@ import (
 	"github.com/libretro/ludo/libretro"
 )
 
+
 // GetSRAM prints the content of the SRAM
 func GetSRAM() []byte {
 	len := state.Core.GetMemorySize(libretro.MemorySaveRAM)

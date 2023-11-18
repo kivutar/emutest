@@ -55,6 +55,15 @@ You can also pass the core and rom like this:
 emutest -L path/to/core_libretro.so -r path/to/rom.bin -t path/to/test.lua
 ```
 
+These if passed go into the Lua variables:
+
+* filename = path to test file
+* rompath = path to ROM
+* corepath = path to core library
+
+If you pass the `-T` flag, the Lua script must call os.exit(status) or
+emutest will itself return an error.
+
 This is an example test file:
 
 ```
